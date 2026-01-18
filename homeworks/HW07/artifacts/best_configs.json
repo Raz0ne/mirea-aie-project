@@ -1,0 +1,26 @@
+{
+  "dataset_1": {
+    "method": "DBSCAN",
+    "parameters": {
+      "eps": 1.8333333333333333,
+      "min_samples": 3
+    },
+    "criterion": "silhouette_score"
+  },
+  "dataset_2": {
+    "method": "DBSCAN",
+    "parameters": {
+      "eps": 0.7,
+      "min_samples": 3
+    },
+    "criterion": "silhouette_score"
+  },
+  "dataset_3": {
+    "method": "DBSCAN",
+    "parameters": {
+      "eps": 0.8333333333333333,
+      "min_samples": 3
+    },
+    "criterion": "silhouette_score"
+  }
+}
