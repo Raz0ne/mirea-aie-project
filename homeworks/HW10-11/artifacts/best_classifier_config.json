@@ -1,0 +1,13 @@
+{
+  "experiment_id": "C3",
+  "dataset": "STL10",
+  "seed": 42,
+  "model_summary": "ResNet18 pretrained, head-only (fc trainable)",
+  "optimizer": "Adam",
+  "lr": 0.001,
+  "batch_size": 64,
+  "max_epochs": 15,
+  "best_val_accuracy": 0.9486328139901161,
+  "image_size": 224,
+  "test_accuracy": 0.943375
+}

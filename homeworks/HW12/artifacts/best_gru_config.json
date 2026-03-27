@@ -1,0 +1,20 @@
+{
+  "experiment_id": "R1",
+  "architecture": "GRU",
+  "input_size": 1,
+  "hidden_size": 64,
+  "num_layers": 1,
+  "window_size": 48,
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "max_epochs": 50,
+  "epochs_trained": 25,
+  "patience": 7,
+  "seed": 42,
+  "scaler": "StandardScaler (fit on train target)",
+  "optimizer": "Adam",
+  "criterion": "MSELoss",
+  "best_val_mae": 5.0569,
+  "best_val_rmse": 6.6016,
+  "best_val_mape": 3.4183
+}

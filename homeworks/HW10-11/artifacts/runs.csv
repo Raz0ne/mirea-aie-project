@@ -1,0 +1,7 @@
+experiment_id,task,dataset,seed,model_summary,optimizer,lr,epochs_trained,best_val_accuracy,test_accuracy,precision,recall,mean_iou,notes
+C1,classification,STL10,42,"SimpleCNN: Conv(3->32->64->128), FC(256), no augmentation",Adam,0.001,15,0.6119140610098839,,,,,Baseline CNN without augmentation
+C2,classification,STL10,42,"SimpleCNN: Conv(3->32->64->128), FC(256), with augmentation",Adam,0.001,15,0.6044921875,,,,,"CNN with HorizontalFlip, Rotation, ColorJitter"
+C3,classification,STL10,42,"ResNet18 pretrained, head-only (fc trainable)",Adam,0.001,15,0.9486328139901161,,,,,Transfer learning: only fc layer trained
+C4,classification,STL10,42,"ResNet18 pretrained, partial finetune (layer4 + fc)",Adam,0.0001,15,0.9480468742549419,,,,,"Transfer learning: layer4 and fc trained, with augmentation"
+V1,segmentation,OxfordIIITPet,42,DeepLabV3_ResNet50 pretrained,N/A,0,0,,,0.6753653816336903,0.9895645267875918,0.6696298566133642,"Basic postprocessing: argmax, foreground=non-background"
+V2,segmentation,OxfordIIITPet,42,DeepLabV3_ResNet50 pretrained,N/A,0,0,,,0.6764447919024059,0.9894023612827492,0.6706002741617667,Morphological cleaning + small component removal (min_area=500)
