@@ -8,13 +8,13 @@
   "batch_size": 64,
   "learning_rate": 0.001,
   "max_epochs": 50,
-  "epochs_trained": 25,
+  "epochs_trained": 22,
   "patience": 7,
   "seed": 42,
   "scaler": "StandardScaler (fit on train target)",
   "optimizer": "Adam",
   "criterion": "MSELoss",
-  "best_val_mae": 5.0569,
-  "best_val_rmse": 6.6016,
-  "best_val_mape": 3.4183
+  "best_val_mae": 5.0823,
+  "best_val_rmse": 6.5428,
+  "best_val_mape": 3.4384
 }

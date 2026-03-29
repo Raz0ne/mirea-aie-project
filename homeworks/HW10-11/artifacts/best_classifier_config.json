@@ -9,5 +9,7 @@
   "max_epochs": 15,
   "best_val_accuracy": 0.9486328139901161,
   "image_size": 224,
+  "transforms": "Resize(224), ToTensor, Normalize(ImageNet)",
+  "augmentation": "none",
   "test_accuracy": 0.943375
 }
