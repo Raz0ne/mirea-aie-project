@@ -1,0 +1,6 @@
+query,before_retrieved_sources,after_retrieved_sources,changed
+Как использовать threading и многопоточность?,doc_03; doc_03; doc_19,doc_03; doc_03; doc_21,yes
+Что такое GIL в Python?,doc_16; doc_07; doc_11,doc_21; doc_16; doc_22,yes
+Как создать массив ndarray в NumPy?,doc_03; doc_03; doc_16,doc_22; doc_03; doc_03,yes
+Как прочитать CSV через read_csv в Pandas?,doc_09; doc_03; doc_07,doc_23; doc_09; doc_03,yes
+Что делает groupby в Pandas?,doc_10; doc_10; doc_10,doc_23; doc_10; doc_10,yes
