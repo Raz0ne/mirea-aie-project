@@ -1,0 +1,61 @@
+# Configuration for training pipeline.
+# Loaded by src/models/train.py via src/utils/config.py.
+
+data:
+  raw_path: data/raw/application_train.csv
+  use_synthetic_if_missing: true
+  synthetic_n_rows: 50000
+  test_size: 0.2
+  val_size: 0.1
+  random_state: 42
+
+features:
+  # Subset of Home Credit columns we keep for the model.
+  # Picked for stable signal + reasonable interpretability.
+  numeric:
+    - AMT_INCOME_TOTAL
+    - AMT_CREDIT
+    - AMT_ANNUITY
+    - AMT_GOODS_PRICE
+    - DAYS_BIRTH
+    - DAYS_EMPLOYED
+    - DAYS_REGISTRATION
+    - DAYS_ID_PUBLISH
+    - CNT_CHILDREN
+    - CNT_FAM_MEMBERS
+    - REGION_POPULATION_RELATIVE
+    - EXT_SOURCE_1
+    - EXT_SOURCE_2
+    - EXT_SOURCE_3
+  categorical:
+    - NAME_CONTRACT_TYPE
+    - CODE_GENDER
+    - FLAG_OWN_CAR
+    - FLAG_OWN_REALTY
+    - NAME_INCOME_TYPE
+    - NAME_EDUCATION_TYPE
+    - NAME_FAMILY_STATUS
+    - NAME_HOUSING_TYPE
+    - OCCUPATION_TYPE
+
+target: TARGET
+
+models:
+  baseline:
+    name: logistic_regression
+    params:
+      C: 1.0
+      max_iter: 1000
+      class_weight: balanced
+  improved:
+    name: lightgbm
+    params:
+      n_estimators: 400
+      learning_rate: 0.05
+      num_leaves: 31
+      max_depth: -1
+      min_child_samples: 50
+      reg_alpha: 0.1
+      reg_lambda: 0.1
+      class_weight: balanced
+      n_jobs: -1

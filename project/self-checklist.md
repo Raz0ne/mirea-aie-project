@@ -14,16 +14,16 @@
 
 | #  | Критерий                                                                 | Да/Нет (студент) | Где смотреть / комментарий                          |
 |----|---------------------------------------------------------------------------|------------------|-----------------------------------------------------|
-| 1  | Сервис запускается по инструкциям из `project/README.md` и работает      |                  | Например: `README.md`, раздел «Как запустить»       |
-| 2  | Endpoint `/predict` использует **реальную модель**, а не заглушку        |                  | Например: `src/service/`, `src/models/`             |
-| 3  | Есть EDA и хотя бы один эксперимент с метриками                          |                  | Например: `notebooks/01_eda.ipynb`, `report.md`     |
-| 4  | Есть baseline и улучшенная модель, есть **сравнение по метрикам**        |                  | Например: `notebooks/02_baselines.ipynb`, `report.md` |
-| 5  | Код не свален в один ноутбук: есть внятная структура в `src/`            |                  | Например: `src/data/`, `src/models/`, `src/service/` |
-| 6  | Есть Dockerfile **или** понятный сценарий развёртывания без Docker       |                  | Например: `Dockerfile` или шаги в `README.md`       |
-| 7  | Есть `.env.example` и **нет** в репозитории реальных секретов/паролей    |                  | `.env.example`, `SECURITY.md`, отсутствие `.env`    |
-| 8  | Реализованы логи/наблюдаемость (хотя бы консольные логи + `/health`)     |                  | Например: использование `logging`, endpoint `/health` |
-| 9  | В `report.md` **обоснован выбор финальной модели** по результатам экспериментов |           | `report.md`, разделы про результаты и выбор модели  |
-| 10 | `project/README.md` и `report.md` позволяют понять сценарий демонстрации |                  | Разделы «Как запустить», «Демонстрация на защите»   |
+| 1  | Сервис запускается по инструкциям из `project/README.md` и работает      | ✅               | [README.md](README.md), раздел «Как запустить»; `python -m src.service` |
+| 2  | Endpoint `/predict` использует **реальную модель**, а не заглушку        | ✅               | [src/service/app.py](src/service/app.py), [src/service/predictor.py](src/service/predictor.py); артефакт `artifacts/model.joblib` |
+| 3  | Есть EDA и хотя бы один эксперимент с метриками                          | ✅               | [notebooks/01_eda.ipynb](notebooks/01_eda.ipynb), [report.md](report.md) §3, §5 |
+| 4  | Есть baseline и улучшенная модель, есть **сравнение по метрикам**        | ✅               | LogReg + LightGBM в [notebooks/02_models_comparison.ipynb](notebooks/02_models_comparison.ipynb); таблица в [report.md](report.md) §5 |
+| 5  | Код не свален в один ноутбук: есть внятная структура в `src/`            | ✅               | [src/data/](src/data/), [src/models/](src/models/), [src/service/](src/service/), [src/utils/](src/utils/) |
+| 6  | Есть Dockerfile **или** понятный сценарий развёртывания без Docker       | ✅               | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml); шаги в [README.md](README.md) §4.3 |
+| 7  | Есть `.env.example` и **нет** в репозитории реальных секретов/паролей    | ✅               | [configs/env.example](configs/env.example); `.env` исключён в [.gitignore](.gitignore) |
+| 8  | Реализованы логи/наблюдаемость (хотя бы консольные логи + `/health`)     | ✅               | `logging` через [src/utils/logging.py](src/utils/logging.py); access-log middleware и `/health` в [src/service/app.py](src/service/app.py) |
+| 9  | В `report.md` **обоснован выбор финальной модели** по результатам экспериментов | ✅       | [report.md](report.md) §5 «Выбор финальной модели»  |
+| 10 | `project/README.md` и `report.md` позволяют понять сценарий демонстрации | ✅               | [README.md](README.md) §8, [report.md](report.md) §9 |
 
 ---
 
@@ -47,3 +47,12 @@
 - соблюдение требований курса и дедлайнов.
 
 ---
+
+## Дополнительные сильные стороны
+
+- **10 pytest-тестов** покрывают синтетику, предиктор и все endpoint'ы сервиса (запуск: `pytest tests -v`).
+- **Синтетический Home Credit-подобный генератор** (`src/data/synthetic.py`) даёт реалистичные данные с правильной схемой и положительной долей ~8%, что делает проект воспроизводимым без аккаунта Kaggle.
+- **Конфиги вынесены наружу**: `configs/model.yaml` (обучение), `configs/env.example` → `.env` (runtime сервиса).
+- **Pydantic v2 валидация** входных данных: диапазоны, типы, опциональность всех полей (поддержка частично заполненных заявок).
+- **Single sklearn pipeline** (preprocessing + classifier) сериализуется целиком — нет risk of train/serve skew.
+- **Docker-compose с healthcheck** на основе `GET /health`.
