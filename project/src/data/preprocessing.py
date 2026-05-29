@@ -1,4 +1,4 @@
-"""Preprocessing pipeline for credit-scoring features."""
+"""Конвейер препроцессинга признаков для кредитного скоринга."""
 from __future__ import annotations
 
 from sklearn.compose import ColumnTransformer
@@ -10,10 +10,10 @@ from .dataset import CATEGORICAL_FEATURES, NUMERIC_FEATURES
 
 
 def build_preprocessor(scale_numeric: bool = True) -> ColumnTransformer:
-    """ColumnTransformer for numeric+categorical features.
+    """ColumnTransformer для числовых и категориальных признаков.
 
-    - Numeric: median imputation, optional standard scaling.
-    - Categorical: most-frequent imputation, one-hot encoding (dense).
+    - Числовые: импутация медианой, опционально стандартизация.
+    - Категориальные: импутация модой, one-hot encoding (плотный).
     """
     numeric_steps = [("imputer", SimpleImputer(strategy="median"))]
     if scale_numeric:

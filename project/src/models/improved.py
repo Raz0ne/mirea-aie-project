@@ -1,8 +1,9 @@
-"""Improved credit-scoring model — LightGBM.
+"""Улучшенная модель кредитного скоринга — LightGBM.
 
-LightGBM handles missing values natively, so we don't impute. We still one-hot
-encode categoricals (cheap subset, ~9 columns) to keep the pipeline pure-sklearn
-and avoid bundling lightgbm-specific categorical encoders into the artifact.
+LightGBM умеет работать с пропусками нативно, поэтому импутацию не делаем.
+Категориальные признаки всё же кодируем one-hot (всего ~9 колонок) — это
+оставляет пайплайн чисто sklearn-совместимым и позволяет не упаковывать
+lightgbm-специфичные энкодеры в артефакт.
 """
 from __future__ import annotations
 

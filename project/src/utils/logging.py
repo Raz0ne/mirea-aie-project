@@ -1,4 +1,4 @@
-"""Centralized logger setup."""
+"""Централизованная настройка логгера."""
 from __future__ import annotations
 
 import logging

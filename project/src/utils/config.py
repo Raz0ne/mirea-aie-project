@@ -1,9 +1,9 @@
-"""Project-wide configuration utilities.
+"""Утилиты конфигурации проекта.
 
-Two layers of configuration:
+Два слоя конфигурации:
 
-1. `TrainConfig` — YAML-driven training config (paths, features, model params).
-2. `ServiceSettings` — pydantic-settings based service config, read from env.
+1. `TrainConfig` — YAML-конфиг обучения (пути, фичи, гиперпараметры моделей).
+2. `ServiceSettings` — конфиг сервиса на pydantic-settings, читается из окружения.
 """
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ class TrainConfig:
 
 
 class ServiceSettings(BaseSettings):
-    """Service runtime settings loaded from environment (.env supported)."""
+    """Runtime-настройки сервиса, читаются из окружения (поддерживается .env)."""
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000

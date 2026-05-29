@@ -1,4 +1,4 @@
-"""Smoke tests for the FastAPI service."""
+"""Smoke-тесты для FastAPI-сервиса."""
 from __future__ import annotations
 
 
@@ -31,7 +31,7 @@ def test_predict_batch(client, sample_payload):
 
 
 def test_predict_validates_input(client):
-    # AMT_INCOME_TOTAL must be >= 0.
+    # AMT_INCOME_TOTAL должен быть >= 0.
     response = client.post("/predict", json={"AMT_INCOME_TOTAL": -100})
     assert response.status_code == 422
 

@@ -1,9 +1,9 @@
-"""FastAPI application for the credit-scoring service.
+"""FastAPI-приложение сервиса кредитного скоринга.
 
 Endpoints:
-    GET  /health           — liveness + model status
-    POST /predict          — single application → default probability + decision
-    POST /predict/batch    — batched applications
+    GET  /health           — liveness + статус загруженной модели
+    POST /predict          — одна заявка → вероятность дефолта и решение
+    POST /predict/batch    — массив заявок
 """
 from __future__ import annotations
 
@@ -35,20 +35,20 @@ async def lifespan(app: FastAPI):
     try:
         app.state.predictor = Predictor.load(model_path)
         logger.info(
-            "Service ready. model=%s trained_at=%s threshold=%.3f",
+            "Сервис готов. model=%s trained_at=%s threshold=%.3f",
             app.state.predictor.model_name,
             app.state.predictor.trained_at,
             settings.decision_threshold,
         )
     except FileNotFoundError as exc:
-        logger.error("Failed to load model: %s", exc)
+        logger.error("Не удалось загрузить модель: %s", exc)
         app.state.predictor = None
     yield
 
 
 app = FastAPI(
     title="Credit Scoring API",
-    description="Home Credit Default Risk — predict default probability for a credit application.",
+    description="Home Credit Default Risk — предсказание вероятности дефолта по заявке на кредит.",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -77,7 +77,7 @@ def _get_predictor(request: Request) -> Predictor:
     if predictor is None:
         raise HTTPException(
             status_code=503,
-            detail="Model is not loaded. Train the model first (`python -m src.models.train`).",
+            detail="Модель не загружена. Сначала обучите её (`python -m src.models.train`).",
         )
     return predictor
 
@@ -116,7 +116,7 @@ def predict(payload: ApplicationFeatures, request: Request):
 def predict_batch(payload: BatchPredictRequest, request: Request):
     predictor = _get_predictor(request)
     if not payload.items:
-        raise HTTPException(status_code=400, detail="`items` must not be empty.")
+        raise HTTPException(status_code=400, detail="Поле `items` не должно быть пустым.")
     proba = predictor.predict_proba(item.model_dump() for item in payload.items)
     predictions = [
         PredictResponse(

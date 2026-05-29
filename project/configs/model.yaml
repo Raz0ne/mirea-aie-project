@@ -1,5 +1,5 @@
-# Configuration for training pipeline.
-# Loaded by src/models/train.py via src/utils/config.py.
+# Конфигурация конвейера обучения.
+# Загружается из src/models/train.py через src/utils/config.py.
 
 data:
   raw_path: data/raw/application_train.csv
@@ -10,8 +10,8 @@ data:
   random_state: 42
 
 features:
-  # Subset of Home Credit columns we keep for the model.
-  # Picked for stable signal + reasonable interpretability.
+  # Подмножество колонок Home Credit, которые оставляем для модели.
+  # Подобраны за устойчивый сигнал + разумную интерпретируемость.
   numeric:
     - AMT_INCOME_TOTAL
     - AMT_CREDIT

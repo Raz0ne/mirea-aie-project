@@ -1,4 +1,4 @@
-"""`python -m src.service` — run the FastAPI service via uvicorn."""
+"""`python -m src.service` — запуск FastAPI-сервиса через uvicorn."""
 from __future__ import annotations
 
 import uvicorn

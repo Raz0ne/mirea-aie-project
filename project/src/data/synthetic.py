@@ -1,12 +1,12 @@
-"""Synthetic Home Credit-like dataset generator.
+"""Генератор синтетического датасета, похожего на Home Credit.
 
-Used as a fallback when the real Kaggle CSV is not available.
-The schema mimics `application_train.csv` from the Home Credit Default Risk
-competition: we use the same column names, dtypes, and roughly the same value
-ranges. The target TARGET is generated from a logistic model over a small set
-of features (EXT_SOURCE_*, DAYS_BIRTH, employment ratio, credit/income ratio),
-plus noise — so any sensible model will pick up real signal, but the dataset
-contains no actual personal data.
+Используется как fallback, когда реальный CSV из Kaggle недоступен.
+Схема повторяет `application_train.csv` из соревнования Home Credit Default Risk:
+те же названия колонок, типы данных и примерно те же диапазоны значений.
+Целевая переменная TARGET генерируется из логистической модели над небольшим
+набором признаков (EXT_SOURCE_*, DAYS_BIRTH, отношение стажа, credit/income),
+плюс шум — так что любая разумная модель уловит реальный сигнал, но в датасете
+нет настоящих персональных данных.
 """
 from __future__ import annotations
 
@@ -67,10 +67,10 @@ def _sample_choice(rng: np.random.Generator, options, size, p=None):
 
 
 def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
-    """Generate a synthetic Home Credit-like dataset.
+    """Сгенерировать синтетический датасет, похожий на Home Credit.
 
-    Output columns match the subset we model on, plus a few common extras.
-    Approximate class balance is ~8% positives, like the real dataset.
+    Колонки совпадают с теми, что используются в модели, плюс несколько типичных
+    дополнительных. Примерный баланс классов — ~8% положительных, как в реальном датасете.
     """
     rng = np.random.default_rng(random_state)
     n = int(n_rows)
@@ -87,18 +87,18 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
         [0, 1, 2, 3, 4], n, p=[0.70, 0.20, 0.08, 0.015, 0.005]
     )
 
-    # Income — lognormal, then clip.
+    # Доход — лог-нормальное распределение с обрезкой по границам.
     income = rng.lognormal(mean=12.0, sigma=0.55, size=n)
     df["AMT_INCOME_TOTAL"] = np.clip(income, 25_000, 5_000_000).round(-2)
 
-    # Credit amount — correlated with income.
+    # Сумма кредита — коррелирует с доходом.
     credit_mult = rng.lognormal(mean=1.2, sigma=0.5, size=n)
     df["AMT_CREDIT"] = np.clip(df["AMT_INCOME_TOTAL"] * credit_mult, 45_000, 4_000_000).round(-2)
 
-    # Goods price slightly below credit.
+    # Цена товара — чуть ниже суммы кредита.
     df["AMT_GOODS_PRICE"] = (df["AMT_CREDIT"] * rng.uniform(0.85, 1.0, n)).round(-2)
 
-    # Annuity ~ credit / term, term 12..60 months.
+    # Аннуитет ~ кредит / срок, срок 12..60 месяцев.
     term = rng.integers(12, 60, size=n)
     df["AMT_ANNUITY"] = (df["AMT_CREDIT"] / term * rng.uniform(1.05, 1.25, n)).round(-1)
 
@@ -115,9 +115,9 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
         rng, HOUSING_TYPES, n, p=[0.89, 0.05, 0.03, 0.02, 0.005, 0.005]
     )
 
-    # Days are negative integers (days before application).
+    # DAYS_* — отрицательные целые (кол-во дней до подачи заявки).
     df["DAYS_BIRTH"] = -rng.integers(21 * 365, 70 * 365, size=n)
-    # Most clients are employed; pensioners get a huge positive sentinel (365243), as in real data.
+    # Большинство клиентов работают; у пенсионеров — большой положительный sentinel (365243), как в реальных данных.
     employed = rng.random(n) > 0.18
     days_employed = -rng.integers(30, 40 * 365, size=n)
     df["DAYS_EMPLOYED"] = np.where(employed, days_employed, 365243)
@@ -129,20 +129,20 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
     df["REGION_POPULATION_RELATIVE"] = rng.uniform(0.0003, 0.073, size=n).round(6)
 
     occ = pd.Series(_sample_choice(rng, OCCUPATION_TYPES, n), dtype=object)
-    occ_mask = rng.random(n) > 0.30  # ~30% missing, as in real data
+    occ_mask = rng.random(n) > 0.30  # ~30% пропусков, как в реальных данных
     occ[~occ_mask] = np.nan
     df["OCCUPATION_TYPE"] = occ.values
 
-    # External scores — main signal. Strong negative correlation with default.
+    # Внешние скоры — главный сигнал. Сильная отрицательная корреляция с дефолтом.
     ext1 = rng.beta(2, 3, size=n)
     ext2 = rng.beta(2.2, 2.8, size=n)
     ext3 = rng.beta(2.5, 2.5, size=n)
-    # Inject MAR-like missingness similar to the real dataset.
+    # Добавляем MAR-подобные пропуски, похожие на реальные.
     df["EXT_SOURCE_1"] = np.where(rng.random(n) > 0.56, ext1, np.nan)
     df["EXT_SOURCE_2"] = np.where(rng.random(n) > 0.005, ext2, np.nan)
     df["EXT_SOURCE_3"] = np.where(rng.random(n) > 0.20, ext3, np.nan)
 
-    # Build target using a logistic model over key risk drivers.
+    # Целевая переменная — логистическая модель над ключевыми факторами риска.
     age_years = -df["DAYS_BIRTH"] / 365.0
     emp_years = np.where(df["DAYS_EMPLOYED"] == 365243, 0.0, -df["DAYS_EMPLOYED"] / 365.0)
     credit_to_income = df["AMT_CREDIT"] / df["AMT_INCOME_TOTAL"].clip(lower=1.0)
@@ -153,7 +153,7 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
     e3 = df["EXT_SOURCE_3"].fillna(ext3.mean()).to_numpy()
 
     logit = (
-        2.6  # intercept tuned so positive rate ~ 8% (mirrors real Home Credit).
+        2.6  # intercept подобран так, чтобы positive rate ~ 8% (как в реальном Home Credit).
         - 3.4 * e1
         - 3.4 * e2
         - 3.4 * e3
@@ -162,7 +162,7 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
         + 0.35 * np.log1p(credit_to_income.to_numpy())
         + 0.40 * annuity_to_income.to_numpy()
     )
-    # Education effect.
+    # Эффект уровня образования.
     edu_bonus = df["NAME_EDUCATION_TYPE"].map(
         {
             "Higher education": -0.4,
@@ -173,7 +173,7 @@ def generate(n_rows: int = 50_000, random_state: int = 42) -> pd.DataFrame:
         }
     ).fillna(0.0).to_numpy()
     logit = logit + edu_bonus
-    # Stochastic noise.
+    # Случайный шум.
     logit += rng.normal(0, 0.6, n)
 
     proba = 1.0 / (1.0 + np.exp(-logit))
@@ -195,11 +195,11 @@ def write_synthetic_csv(path, n_rows: int = 50_000, random_state: int = 42) -> s
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Generate synthetic Home Credit dataset.")
+    parser = argparse.ArgumentParser(description="Сгенерировать синтетический датасет Home Credit.")
     parser.add_argument("--out", default="data/raw/application_train.csv")
     parser.add_argument("--rows", type=int, default=50_000)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
     path = write_synthetic_csv(args.out, n_rows=args.rows, random_state=args.seed)
-    print(f"Synthetic dataset written to {path}")
+    print(f"Синтетический датасет сохранён в {path}")

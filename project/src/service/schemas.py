@@ -1,7 +1,7 @@
-"""Pydantic schemas for the credit-scoring API.
+"""Pydantic-схемы для API кредитного скоринга.
 
-All numeric features are Optional so callers can submit incomplete applications;
-the preprocessing pipeline imputes missing values.
+Все числовые признаки опциональны — клиент может отправить неполную заявку;
+пайплайн препроцессинга сам импьютирует отсутствующие значения.
 """
 from __future__ import annotations
 
@@ -11,20 +11,20 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class ApplicationFeatures(BaseModel):
-    """Input features for a single credit application."""
+    """Входные признаки одной кредитной заявки."""
 
     model_config = ConfigDict(extra="ignore")
 
-    # Numeric features
-    AMT_INCOME_TOTAL: Optional[float] = Field(None, ge=0, description="Annual income of the client.")
-    AMT_CREDIT: Optional[float] = Field(None, ge=0, description="Loan amount requested.")
-    AMT_ANNUITY: Optional[float] = Field(None, ge=0, description="Loan annuity.")
-    AMT_GOODS_PRICE: Optional[float] = Field(None, ge=0, description="Price of the goods.")
+    # Числовые признаки
+    AMT_INCOME_TOTAL: Optional[float] = Field(None, ge=0, description="Годовой доход клиента.")
+    AMT_CREDIT: Optional[float] = Field(None, ge=0, description="Запрашиваемая сумма кредита.")
+    AMT_ANNUITY: Optional[float] = Field(None, ge=0, description="Аннуитетный платёж по кредиту.")
+    AMT_GOODS_PRICE: Optional[float] = Field(None, ge=0, description="Цена приобретаемого товара.")
     DAYS_BIRTH: Optional[float] = Field(
-        None, le=0, description="Age in days, negative (e.g. -12000 ≈ 33 years old)."
+        None, le=0, description="Возраст в днях, отрицательное число (например, -12000 ≈ 33 года)."
     )
     DAYS_EMPLOYED: Optional[float] = Field(
-        None, description="Days employed before application; negative or sentinel 365243."
+        None, description="Стаж в днях до подачи заявки; отрицательное число или sentinel 365243."
     )
     DAYS_REGISTRATION: Optional[float] = Field(None, le=0)
     DAYS_ID_PUBLISH: Optional[float] = Field(None, le=0)
@@ -35,7 +35,7 @@ class ApplicationFeatures(BaseModel):
     EXT_SOURCE_2: Optional[float] = Field(None, ge=0, le=1)
     EXT_SOURCE_3: Optional[float] = Field(None, ge=0, le=1)
 
-    # Categorical features
+    # Категориальные признаки
     NAME_CONTRACT_TYPE: Optional[str] = None
     CODE_GENDER: Optional[str] = None
     FLAG_OWN_CAR: Optional[str] = None

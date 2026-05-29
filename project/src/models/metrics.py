@@ -1,4 +1,4 @@
-"""Evaluation metrics for credit scoring."""
+"""Метрики оценки качества для кредитного скоринга."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -37,10 +37,10 @@ class ScoringMetrics:
 
 
 def ks_statistic(y_true: np.ndarray, y_score: np.ndarray) -> float:
-    """Kolmogorov-Smirnov statistic — standard credit-scoring metric.
+    """Статистика Колмогорова-Смирнова — стандартная метрика в скоринге.
 
-    KS = max |F1(s) - F0(s)| over score s, where F1 is the CDF of scores for
-    positives and F0 for negatives. Higher = better separation.
+    KS = max |F1(s) - F0(s)| по скорам s, где F1 — CDF скоров для положительного
+    класса, F0 — для отрицательного. Чем больше — тем лучше разделение классов.
     """
     y_true = np.asarray(y_true)
     y_score = np.asarray(y_score)

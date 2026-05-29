@@ -1,4 +1,4 @@
-"""Predictor — wraps the trained model bundle for the FastAPI service."""
+"""Predictor — обёртка над обученным бандлом модели для FastAPI-сервиса."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 
 
 class Predictor:
-    """Loads a trained model bundle and exposes batched predict_proba."""
+    """Загружает обученный бандл модели и предоставляет batched predict_proba."""
 
     def __init__(self, bundle: dict):
         self.pipeline = bundle["pipeline"]
@@ -31,16 +31,16 @@ class Predictor:
         path = Path(path)
         if not path.exists():
             raise FileNotFoundError(
-                f"Model artifact not found at {path}. Run `python -m src.models.train` first."
+                f"Артефакт модели не найден по пути {path}. Сначала запустите `python -m src.models.train`."
             )
-        logger.info("Loading model bundle from %s", path)
+        logger.info("Загружаем бандл модели из %s", path)
         bundle = joblib.load(path)
         return cls(bundle)
 
     def _to_frame(self, items: Iterable[dict]) -> pd.DataFrame:
         df = pd.DataFrame(list(items))
-        # Ensure all expected feature columns exist with the right dtype.
-        # NumPy NaN is required for numeric columns — pd.NA breaks sklearn imputers.
+        # Гарантируем, что все ожидаемые колонки признаков существуют и имеют нужный dtype.
+        # Для числовых нужен именно numpy.nan — pd.NA ломает импутеры sklearn.
         for col in self.feature_columns:
             if col not in df.columns:
                 df[col] = np.nan if col in NUMERIC_FEATURES else None

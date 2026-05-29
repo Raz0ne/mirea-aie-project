@@ -1,4 +1,4 @@
-"""Baseline credit-scoring model — Logistic Regression on preprocessed features."""
+"""Baseline-модель кредитного скоринга — Logistic Regression на предобработанных признаках."""
 from __future__ import annotations
 
 from sklearn.linear_model import LogisticRegression

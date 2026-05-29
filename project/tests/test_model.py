@@ -1,4 +1,4 @@
-"""Model artifact sanity checks."""
+"""Sanity-проверки артефакта модели."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,7 +14,7 @@ def predictor() -> Predictor:
     settings = ServiceSettings()
     path = settings.resolved_model_path()
     if not Path(path).exists():
-        pytest.skip(f"Model artifact not found at {path}. Run `python -m src.models.train` first.")
+        pytest.skip(f"Артефакт модели не найден по пути {path}. Сначала запустите `python -m src.models.train`.")
     return Predictor.load(path)
 
 
@@ -32,7 +32,7 @@ def test_predict_proba_in_range(predictor: Predictor):
 
 
 def test_risk_ordering(predictor: Predictor):
-    """A clearly risky applicant should score higher than a clearly safe one."""
+    """Рискованный заявитель должен получать более высокий скор, чем явно безопасный."""
     safe = {
         "AMT_INCOME_TOTAL": 300_000,
         "AMT_CREDIT": 400_000,
@@ -56,4 +56,4 @@ def test_risk_ordering(predictor: Predictor):
         "NAME_EDUCATION_TYPE": "Lower secondary",
     }
     safe_p, risky_p = predictor.predict_proba([safe, risky])
-    assert risky_p > safe_p, f"risky ({risky_p:.3f}) should exceed safe ({safe_p:.3f})"
+    assert risky_p > safe_p, f"скор рискованного ({risky_p:.3f}) должен быть выше безопасного ({safe_p:.3f})"

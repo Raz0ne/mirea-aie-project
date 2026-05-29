@@ -1,7 +1,7 @@
-"""Shared pytest fixtures.
+"""Общие фикстуры pytest.
 
-Makes the project root importable as `src.*` and provides a FastAPI TestClient
-backed by the trained model artifact.
+Делает корень проекта импортируемым как `src.*` и предоставляет FastAPI
+TestClient на основе обученного артефакта модели.
 """
 from __future__ import annotations
 

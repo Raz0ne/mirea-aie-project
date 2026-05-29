@@ -1,10 +1,11 @@
-"""End-to-end training: load data, train baseline + improved model, evaluate, save artifact.
+"""Сквозное обучение: загрузка данных, тренировка baseline + улучшенной модели,
+оценка качества, сохранение артефакта.
 
-Usage:
+Использование:
     python -m src.models.train
     python -m src.models.train --config configs/model.yaml --out artifacts/model.joblib
 
-The script saves a single joblib bundle that the service consumes:
+Скрипт сохраняет один joblib-бандл, который потом подгружает сервис:
 
     {
         "pipeline":  sklearn.pipeline.Pipeline,
@@ -86,7 +87,7 @@ def train(config_path: str | None = None, output_path: str | None = None) -> dic
         threshold=threshold,
     )
 
-    # Choose the better of the two by ROC-AUC on the val set.
+    # Выбираем лучшую из двух моделей по ROC-AUC на val.
     if improved_val.roc_auc >= baseline_val.roc_auc:
         chosen_name = "improved (lightgbm)"
         chosen_pipeline = improved_pipeline
@@ -98,7 +99,7 @@ def train(config_path: str | None = None, output_path: str | None = None) -> dic
 
     logger.info("Selected final model: %s (val ROC-AUC=%.4f)", chosen_name, chosen_val.roc_auc)
 
-    # Final unbiased estimate on the held-out test set.
+    # Итоговая несмещённая оценка качества на отложенном тесте.
     test_proba = chosen_pipeline.predict_proba(X_test)[:, 1]
     test_metrics = evaluate(y_test, test_proba, threshold=threshold)
     logger.info(
@@ -133,7 +134,7 @@ def train(config_path: str | None = None, output_path: str | None = None) -> dic
     joblib.dump(bundle, out_path)
     logger.info("Saved model artifact to %s (%.2f MB)", out_path, out_path.stat().st_size / 1e6)
 
-    # Also dump a side-by-side metrics JSON for quick reading.
+    # Дублируем метрики в JSON рядом с артефактом — для быстрого чтения.
     metrics_json = out_path.with_suffix(".metrics.json")
     metrics_json.write_text(json.dumps(bundle["metrics"], indent=2), encoding="utf-8")
     logger.info("Saved metrics JSON to %s", metrics_json)
@@ -142,9 +143,9 @@ def train(config_path: str | None = None, output_path: str | None = None) -> dic
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Train credit-scoring model.")
-    parser.add_argument("--config", default=None, help="Path to YAML training config.")
-    parser.add_argument("--out", default=None, help="Output path for the joblib model artifact.")
+    parser = argparse.ArgumentParser(description="Обучить модель кредитного скоринга.")
+    parser.add_argument("--config", default=None, help="Путь к YAML-конфигу обучения.")
+    parser.add_argument("--out", default=None, help="Путь для сохранения joblib-артефакта модели.")
     args = parser.parse_args()
     train(config_path=args.config, output_path=args.out)
 

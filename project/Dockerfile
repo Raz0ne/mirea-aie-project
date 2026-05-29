@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-# libgomp is required by lightgbm at runtime.
+# libgomp нужен lightgbm в рантайме.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*
@@ -21,5 +21,5 @@ COPY artifacts ./artifacts
 
 EXPOSE 8000
 
-# Default healthcheck-friendly entrypoint.
+# Точка входа, совместимая с healthcheck.
 CMD ["python", "-m", "src.service"]

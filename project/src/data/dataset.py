@@ -1,4 +1,4 @@
-"""Dataset loading and splitting for credit-scoring project."""
+"""Загрузка и разбиение датасета для проекта кредитного скоринга."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -48,12 +48,12 @@ TARGET = "TARGET"
 
 
 def load_dataset(cfg: TrainConfig) -> pd.DataFrame:
-    """Load the raw dataset. Falls back to synthetic data if the file is missing
-    and `use_synthetic_if_missing` is enabled in the config.
+    """Загрузить сырой датасет. Если файла нет и в конфиге включено
+    `use_synthetic_if_missing` — сгенерировать синтетику.
     """
     raw_path = Path(cfg.data.raw_path)
     if not raw_path.is_absolute():
-        # Resolve relative to project root.
+        # Разрешаем путь относительно корня проекта.
         from src.utils.config import PROJECT_ROOT
 
         raw_path = PROJECT_ROOT / raw_path
@@ -94,11 +94,11 @@ def _validate_columns(df: pd.DataFrame) -> None:
 
 
 def _clean(df: pd.DataFrame) -> pd.DataFrame:
-    # Real Home Credit uses 365243 as a sentinel for "no employment" days. Replace with NaN.
+    # В реальном Home Credit 365243 — sentinel «нет занятости». Заменяем на NaN.
     df = df.copy()
     if "DAYS_EMPLOYED" in df.columns:
         df["DAYS_EMPLOYED"] = df["DAYS_EMPLOYED"].replace(365243, np.nan)
-    # CODE_GENDER has rare 'XNA' values.
+    # У CODE_GENDER встречаются редкие значения 'XNA'.
     if "CODE_GENDER" in df.columns:
         df["CODE_GENDER"] = df["CODE_GENDER"].replace("XNA", np.nan)
     return df
@@ -107,7 +107,7 @@ def _clean(df: pd.DataFrame) -> pd.DataFrame:
 def split_dataset(
     df: pd.DataFrame, cfg: TrainConfig
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series]:
-    """Stratified split into train / val / test."""
+    """Стратифицированное разбиение на train / val / test."""
     X = df[FEATURE_COLUMNS].copy()
     y = df[TARGET].astype(int)
 
