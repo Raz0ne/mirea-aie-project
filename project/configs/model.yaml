@@ -2,7 +2,7 @@
 # Загружается из src/models/train.py через src/utils/config.py.
 
 data:
-  raw_path: data/raw/application_train.csv
+  raw_path: data/raw/application_train_subset.csv
   use_synthetic_if_missing: true
   synthetic_n_rows: 50000
   test_size: 0.2
